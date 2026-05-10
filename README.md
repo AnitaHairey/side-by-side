@@ -3,17 +3,17 @@
 这是一个双端联动的演示项目，核心目标是帮助不熟悉智能手机的妈妈处理复杂页面操作。
 
 
-项目采用 Monorepo 结构，前端与服务端分离:
-
-- frontend: React + Vite + TypeScript
-- server: Express + TypeScript + Azure OpenAI
-
 ## 界面截图
 
-![妈妈端 1](./image/Snipaste_2026-05-10_16-44-19.png)
-![妈妈端 2](./image/Snipaste_2026-05-10_16-44-56.png)
-![女儿端 3](./image/Snipaste_2026-05-10_16-45-45.png)
-![女儿端 4](./image/Snipaste_2026-05-10_16-45-56.png)
+妈妈端
+
+<img src="./image/Snipaste_2026-05-10_16-44-19.png" alt="妈妈端 1" width="49%" />
+<img src="./image/Snipaste_2026-05-10_16-44-56.png" alt="妈妈端 2" width="49%" />
+
+女儿端
+
+<img src="./image/Snipaste_2026-05-10_16-45-45.png" alt="女儿端 1" width="49%" />
+<img src="./image/Snipaste_2026-05-10_16-45-56.png" alt="女儿端 2" width="49%" />
 
 ## 当前功能
 
@@ -23,6 +23,13 @@
 - 女儿端能力: 给妈妈发消息、查看社区志愿求助、接单与电话回拨
 - AI 风险分级: none / daughter / volunteer
 - 真实模式已关闭自动引导图生成: 服务端只返回文本建议，不自动生成图片
+
+## 项目架构
+
+项目采用 Monorepo 结构，前端与服务端分离:
+
+- frontend: React + Vite + TypeScript
+- server: Express + TypeScript + Azure OpenAI
 
 ## 目录结构
 
