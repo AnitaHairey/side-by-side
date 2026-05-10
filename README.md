@@ -1,30 +1,35 @@
-# 帮妈妈问 AI
+# 妈宝 Side By Side
 
-这是一个从头重写后的版本：只保留文档，代码收敛成 `frontend + server` 两个包。
+这是一个双端联动的演示项目，核心目标是帮助不熟悉智能手机的妈妈处理复杂页面操作。
 
-目标很直接：妈妈遇到电子产品不会用的问题时，可以持续向 AI 追问；AI 先用文字、引导图和女声朗读回答；当问题边界不清或有风险时，界面会提示联系女儿，或进一步转给志愿者。女儿端暂不实现，分享入口先在前端 mock。
+- 妈妈端路径: /mom
+- 妈妈端调试剧本路径: /mom/debug
+- 女儿端路径: /daughter
 
-## 当前能力
+项目采用 Monorepo 结构，前端与服务端分离:
 
-- 单页妈妈端，只有一个长上下文会话
-- 文字提问
-- 拍照上传
-- 相册图片上传
-- MP4 视频上传
-- 浏览器语音输入
-- AI 文本回复
-- AI 引导图回复
-- 浏览器 TTS 女声播报
-- 模糊问题自动建议联系女儿/志愿者
-- 分享按钮可把当前建议发给别人
+- frontend: React + Vite + TypeScript
+- server: Express + TypeScript + Azure OpenAI
 
-## 目录
+## 当前功能
+
+- 双端联动聊天: 妈妈端与女儿端通过 BroadcastChannel + localStorage 快照同步
+- 妈妈端输入方式: 打字、语音转文字、上传图片/视频
+- 妈妈端语音播报: 浏览器 TTS 自动播报 AI 回复
+- 女儿端能力: 给妈妈发消息、查看社区志愿求助、接单与电话回拨
+- AI 风险分级: none / daughter / volunteer
+- 路由模式切换:
+  - /mom/debug: 前端脚本化 mock 对话（含示意引导图）
+  - /mom: 真实后端 AI
+- 真实模式已关闭自动引导图生成: 服务端只返回文本建议，不自动生成图片
+
+## 目录结构
 
 ```text
 SideBySide/
 ├── README.md
 ├── DESIGN.md
-├── DEPLOY_AZURE_APP_SERVICE.md
+├── DEPLOY.md
 ├── package.json
 ├── frontend/
 │   ├── package.json
@@ -32,8 +37,12 @@ SideBySide/
 │       ├── App.tsx
 │       ├── main.tsx
 │       ├── styles.css
+│       ├── pages/
+│       │   └── Daughter.tsx
 │       └── lib/
 │           ├── api.ts
+│           ├── bus.ts
+│           ├── mockImages.ts
 │           └── types.ts
 └── server/
     ├── package.json
@@ -47,56 +56,92 @@ SideBySide/
 
 ## 本地开发
 
-前提：本机已安装 Node.js 20+。
+前提:
+
+- Node.js 20+
+- npm 10+
+
+安装依赖:
 
 ```powershell
 cd C:\Users\sunmeng\Downloads\SideBySide
 npm install
+```
+
+启动前端:
+
+```powershell
 npm run dev:frontend
+```
+
+启动服务端:
+
+```powershell
 npm run dev:server
 ```
 
-默认约定：
+默认地址:
 
-- 前端开发地址：`http://localhost:5173`
-- 服务端地址：`http://localhost:8787`
-- 前端会把 `/api/*` 代理到服务端
+- 妈妈端：http://localhost:5173/mom
+- http://localhost:5173/daughter
+- 测试端：http://localhost:5173/mom/debug
 
-也可以只启动服务端：
+## 构建与运行
+
+全量构建:
 
 ```powershell
-npm run dev
+npm run build
+```
+
+生产方式启动服务端:
+
+```powershell
+npm run start
 ```
 
 ## 环境变量
 
-服务端支持 Azure OpenAI，也支持 mock 模式。
+服务端在 server/.env 读取配置，核心变量如下:
 
 ```env
 AZURE_OPENAI_ENDPOINT=
 AZURE_OPENAI_API_KEY=
 AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
 AZURE_OPENAI_API_VERSION=2024-08-01-preview
-USE_MOCK_AI=true
+USE_MOCK_AI=false
 PORT=8787
 ```
 
-说明：
+说明:
 
-- `USE_MOCK_AI=true` 或缺少 Azure OpenAI 配置时，服务端自动走 mock 结果
-- 图片会作为多模态输入发送给模型
-- 视频目前作为附件摘要进入上下文，不做逐帧分析
+- USE_MOCK_AI=true 时，服务端返回 mock 结果
+- 如果缺少 Azure 配置，服务端也会自动进入 mock
+- 图片会作为多模态输入进入模型
+- 视频仅作为附件说明文本，不做逐帧分析
 
 ## API
 
-- `POST /api/session` 创建单一会话
-- `GET /api/session/:sessionId` 读取当前会话
-- `POST /api/chat` 发送文字和附件，返回完整会话
-- `GET /api/health` 健康检查
+- POST /api/session: 创建会话
+- GET /api/session/:sessionId: 获取会话
+- POST /api/chat: 发送文本和附件，返回完整会话
+- GET /api/health: 健康检查
+
+## 部署
+
+Azure App Service 部署步骤见 DEPLOY.md。
+
+当前线上流程是:
+
+1. 本地 build
+2. 组装 deploy.zip
+3. 上传到 Kudu /home/deploy.zip
+4. SSH 解压到 /home/site/wwwroot
+5. 重启站点
 
 ## 已知限制
 
-- 女儿端未实现，当前只保留分享入口和升级提示
-- 视频仅上传给服务端并进入模型上下文摘要，不做视觉拆帧
-- 语音输入依赖浏览器 `SpeechRecognition`，不支持时自动退回打字
-- 语音播报依赖浏览器 `speechSynthesis`，不同设备音色会有差异
+- 前端仍保留 guidanceImageUrl 渲染逻辑，主要用于 /mom/debug 演示
+- 会话存储为内存 Map，服务重启会丢失
+- 语音输入依赖浏览器 SpeechRecognition，部分 iOS 环境不可用
+- TTS 依赖浏览器 speechSynthesis，实际音色随设备变化
