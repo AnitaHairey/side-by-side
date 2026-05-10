@@ -8,6 +8,13 @@
 - frontend: React + Vite + TypeScript
 - server: Express + TypeScript + Azure OpenAI
 
+## 界面截图
+
+![妈妈端 1](./image/Snipaste_2026-05-10_16-44-19.png)
+![妈妈端 2](./image/Snipaste_2026-05-10_16-44-56.png)
+![女儿端 3](./image/Snipaste_2026-05-10_16-45-45.png)
+![女儿端 4](./image/Snipaste_2026-05-10_16-45-56.png)
+
 ## 当前功能
 
 - 双端联动聊天: 妈妈端与女儿端通过 BroadcastChannel + localStorage 快照同步
