@@ -2,9 +2,6 @@
 
 这是一个双端联动的演示项目，核心目标是帮助不熟悉智能手机的妈妈处理复杂页面操作。
 
-- 妈妈端路径: /mom
-- 妈妈端调试剧本路径: /mom/debug
-- 女儿端路径: /daughter
 
 项目采用 Monorepo 结构，前端与服务端分离:
 
@@ -18,9 +15,6 @@
 - 妈妈端语音播报: 浏览器 TTS 自动播报 AI 回复
 - 女儿端能力: 给妈妈发消息、查看社区志愿求助、接单与电话回拨
 - AI 风险分级: none / daughter / volunteer
-- 路由模式切换:
-  - /mom/debug: 前端脚本化 mock 对话（含示意引导图）
-  - /mom: 真实后端 AI
 - 真实模式已关闭自动引导图生成: 服务端只返回文本建议，不自动生成图片
 
 ## 目录结构
@@ -83,7 +77,7 @@ npm run dev:server
 默认地址:
 
 - 妈妈端：http://localhost:5173/mom
-- http://localhost:5173/daughter
+- 女儿端：http://localhost:5173/daughter
 - 测试端：http://localhost:5173/mom/debug
 
 ## 构建与运行

@@ -12,3 +12,8 @@ deploy.zip
 applog/
 speach
 *.tmp
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp
+/*.gif
