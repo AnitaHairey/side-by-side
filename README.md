@@ -5,24 +5,21 @@
 
 ## 界面截图
 
-妈妈端
+| 妈妈端 | 妈妈端 |
+| --- | --- |
+| ![妈妈端 1](./image/Snipaste_2026-05-10_16-44-19.png) | ![妈妈端 2](./image/Snipaste_2026-05-10_16-44-56.png) |
 
-<img src="./image/Snipaste_2026-05-10_16-44-19.png" alt="妈妈端 1" width="49%" />
-<img src="./image/Snipaste_2026-05-10_16-44-56.png" alt="妈妈端 2" width="49%" />
+| 女儿端 | 女儿端 |
+| --- | --- |
+| ![女儿端 1](./image/Snipaste_2026-05-10_16-45-45.png) | ![女儿端 2](./image/Snipaste_2026-05-10_16-45-56.png) |
 
-女儿端
+## 主要功能
 
-<img src="./image/Snipaste_2026-05-10_16-45-45.png" alt="女儿端 1" width="49%" />
-<img src="./image/Snipaste_2026-05-10_16-45-56.png" alt="女儿端 2" width="49%" />
-
-## 当前功能
-
-- 双端联动聊天: 妈妈端与女儿端通过 BroadcastChannel + localStorage 快照同步
+- 双端联动聊天: 妈妈、女儿和AI在同一群聊
 - 妈妈端输入方式: 打字、语音转文字、上传图片/视频
 - 妈妈端语音播报: 浏览器 TTS 自动播报 AI 回复
 - 女儿端能力: 给妈妈发消息、查看社区志愿求助、接单与电话回拨
 - AI 风险分级: none / daughter / volunteer
-- 真实模式已关闭自动引导图生成: 服务端只返回文本建议，不自动生成图片
 
 ## 项目架构
 
@@ -31,7 +28,6 @@
 - frontend: React + Vite + TypeScript
 - server: Express + TypeScript + Azure OpenAI
 
-## 目录结构
 
 ```text
 SideBySide/
@@ -64,27 +60,19 @@ SideBySide/
 
 ## 本地开发
 
-前提:
-
-- Node.js 20+
-- npm 10+
-
-安装依赖:
-
 ```powershell
-cd C:\Users\sunmeng\Downloads\SideBySide
+# 前提：Node.js 20+，npm 10+
+
+# 进入项目根目录
+cd C:\Users\<user_name>\Downloads\SideBySide
+
+# 安装依赖
 npm install
-```
 
-启动前端:
-
-```powershell
+# 启动前端开发服务（Vite）
 npm run dev:frontend
-```
 
-启动服务端:
-
-```powershell
+# 启动服务端开发服务（Express + tsx watch）
 npm run dev:server
 ```
 
@@ -96,55 +84,41 @@ npm run dev:server
 
 ## 构建与运行
 
-全量构建:
-
 ```powershell
+# 全量构建前端与服务端
 npm run build
-```
 
-生产方式启动服务端:
-
-```powershell
+# 以生产方式启动服务端
 npm run start
 ```
 
 ## 环境变量
 
-服务端在 server/.env 读取配置，核心变量如下:
-
 ```env
+# Azure OpenAI 服务地址
 AZURE_OPENAI_ENDPOINT=
+
+# Azure OpenAI API Key
 AZURE_OPENAI_API_KEY=
-AZURE_OPENAI_DEPLOYMENT=gpt-4o-mini
+
+# Azure OpenAI API 版本
 AZURE_OPENAI_API_VERSION=2024-08-01-preview
+
+# 是否启用 mock 模式（true 为 mock，false 为真实 AI）
 USE_MOCK_AI=false
-PORT=8787
 ```
 
-说明:
-
-- USE_MOCK_AI=true 时，服务端返回 mock 结果
-- 如果缺少 Azure 配置，服务端也会自动进入 mock
-- 图片会作为多模态输入进入模型
-- 视频仅作为附件说明文本，不做逐帧分析
-
-## API
-
-- POST /api/session: 创建会话
-- GET /api/session/:sessionId: 获取会话
-- POST /api/chat: 发送文本和附件，返回完整会话
-- GET /api/health: 健康检查
 
 ## 部署
 
-Azure App Service 部署步骤见 DEPLOY.md。
+Azure App Service 部署步骤见 `DEPLOY.md`。
 
 当前线上流程是:
 
 1. 本地 build
-2. 组装 deploy.zip
-3. 上传到 Kudu /home/deploy.zip
-4. SSH 解压到 /home/site/wwwroot
+2. 组装 `deploy.zip`
+3. 上传到 Kudu `/home/deploy.zip`
+4. SSH 解压到 `/home/site/wwwroot`
 5. 重启站点
 
 ## 已知限制
